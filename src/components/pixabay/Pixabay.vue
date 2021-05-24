@@ -17,6 +17,9 @@
             <Imagen :img="img"/>
         </b-col>
     </b-row>
+   
+
+ 
 
 </b-container>
     
@@ -47,6 +50,7 @@ export default {
         this.pixaImagenes=consulta.hits;
         console.log(consulta)
         }
+       
     },
     mounted(){
         this.buscarImagenes();
