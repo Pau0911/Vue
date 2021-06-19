@@ -8,7 +8,7 @@
             <b-button variant="danger" @click="buscarImagenes">Buscar</b-button>
         </b-col> -->
         <b-col>
-            <Buscador @buscarDesdeHijo="buscarImagenes" />
+            <Buscador @buscarDesdeHijo="realizaBusqueda" />
         </b-col>
     </b-row>
     <b-row>
@@ -17,10 +17,20 @@
             <Imagen :img="img"/>
         </b-col>
     </b-row>
+    <b-row align-h="center"> 
+        <b-col md-12>
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                aria-controls="Imagen"
+                @input="buscarImagenes"
+                v-if="rows>0">
+            </b-pagination>
+            <b-alert style="margin:20px"  v-else show variant="info">No se encontraron imagenes coincidentes</b-alert>
+        </b-col>
+    </b-row>
    
-
- 
-
 </b-container>
     
 </template>
@@ -38,17 +48,28 @@ export default {
     },
     data(){
         return{
+
         pixaImagenes:[],
-        buscar:""
+        buscar:"",
+        currentPage:1,
+        rows:1,
+        perpage:28
+
         }
        
     },
     methods:{
-        async buscarImagenes(buscar=""){
-        this.buscar=buscar
-        const consulta= await ServicioAPI.getImagenes(this.buscar)
+        async buscarImagenes(){
+        //this.buscar=buscar
+        const consulta= await ServicioAPI.getImagenes(this.buscar,this.currentPage)
         this.pixaImagenes=consulta.hits;
         console.log(consulta)
+        this.rows=consulta.total / this.perpage;
+        },
+        realizaBusqueda(buscar=""){
+            this.buscar=buscar;
+            this.buscarImagenes();
+            this.currentPage=1;
         }
        
     },
